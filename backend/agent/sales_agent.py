@@ -1,4 +1,5 @@
 import os
+import json
 
 from dotenv import load_dotenv
 from google import genai
@@ -7,6 +8,7 @@ from google.genai import types
 from .prompt import SALES_AGENT_PROMPT
 from memory.session_memory import SessionMemory
 from tools.product_tool import get_product_info
+from tools.pricing_tool import get_pricing_info
 
 
 load_dotenv()
@@ -15,6 +17,7 @@ load_dotenv()
 class SalesAgent:
 
     def __init__(self):
+
         self.system_prompt = SALES_AGENT_PROMPT
 
         api_key = os.getenv("GEMINI_API_KEY")
@@ -25,6 +28,10 @@ class SalesAgent:
         self.client = genai.Client(api_key=api_key)
 
         self.memory = SessionMemory()
+
+        # -------------------------
+        # PRODUCT TOOL
+        # -------------------------
 
         self.product_tool = types.Tool(
             function_declarations=[
@@ -43,18 +50,45 @@ class SalesAgent:
             ]
         )
 
+        # -------------------------
+        # PRICING TOOL
+        # -------------------------
+
+        self.pricing_tool = types.Tool(
+            function_declarations=[
+                types.FunctionDeclaration(
+                    name="get_pricing_info",
+                    description=(
+                        "Get pricing information for SalesFlow CRM, "
+                        "including available plans, monthly prices, "
+                        "target customers, and plan features."
+                    ),
+                    parameters=types.Schema(
+                        type="OBJECT",
+                        properties={}
+                    )
+                )
+            ]
+        )
+
     def get_prompt(self):
         return self.system_prompt
 
     def chat(self, user_message):
 
-        # Save user message
+        # -------------------------
+        # SAVE USER MESSAGE
+        # -------------------------
+
         self.memory.add_message(
             "user",
             user_message
         )
 
-        # Build conversation text
+        # -------------------------
+        # GET MEMORY
+        # -------------------------
+
         conversation = self.memory.get_messages()
 
         conversation_text = ""
@@ -65,7 +99,10 @@ class SalesAgent:
                 f"{message['content']}\n"
             )
 
-        # First LLM call
+        # -------------------------
+        # FIRST GEMINI CALL
+        # -------------------------
+
         response = self.client.models.generate_content(
             model="gemini-3.6-flash",
 
@@ -76,51 +113,117 @@ Conversation so far:
 
 {conversation_text}
 
-Respond to the customer's latest message.
-If you need information about SalesFlow CRM, you may use
-the get_product_info tool.
+Customer's latest message:
+
+{user_message}
+
+You are a sales agent for SalesFlow CRM.
+
+If the customer asks about product features,
+use the get_product_info tool.
+
+If the customer asks about pricing,
+use the get_pricing_info tool.
+
+Otherwise, answer naturally.
 """,
 
             config=types.GenerateContentConfig(
-                tools=[self.product_tool]
+                tools=[
+                    self.product_tool,
+                    self.pricing_tool
+                ]
             )
         )
 
-        # Check if Gemini requested the product tool
+        # -------------------------
+        # DEBUG
+        # -------------------------
+
+        print("GEMINI RESPONSE:", response)
+
+        # -------------------------
+        # CHECK TOOL CALL
+        # -------------------------
+
         if response.function_calls:
 
             function_call = response.function_calls[0]
 
+            print("TOOL REQUESTED:", function_call.name)
+
+            # -------------------------
+            # PRODUCT TOOL
+            # -------------------------
+
             if function_call.name == "get_product_info":
 
-                # Execute our Python tool
                 product_info = get_product_info()
 
-                # Send the tool result back to Gemini
+                print("PRODUCT TOOL RESULT:", product_info)
+
                 response = self.client.models.generate_content(
                     model="gemini-3.6-flash",
 
-                    contents=[
-                        f"""
+                    contents=f"""
 {self.system_prompt}
 
-Customer question:
+Customer asked:
+
 {user_message}
 
-Here is the product information retrieved from our
-internal product database:
+Product information from our database:
 
-{product_info}
+{json.dumps(product_info, indent=2)}
 
-Using this information, answer the customer's question.
+Answer the customer using ONLY the information above.
+
 Do not invent product features.
-"""
-                    ]
+""",
                 )
+
+            # -------------------------
+            # PRICING TOOL
+            # -------------------------
+
+            elif function_call.name == "get_pricing_info":
+
+                pricing_info = get_pricing_info()
+
+                print("PRICING TOOL RESULT:", pricing_info)
+
+                response = self.client.models.generate_content(
+                    model="gemini-3.6-flash",
+
+                    contents=f"""
+{self.system_prompt}
+
+Customer asked:
+
+{user_message}
+
+Pricing information from our database:
+
+{json.dumps(pricing_info, indent=2)}
+
+Answer the customer using ONLY the pricing information above.
+
+Do not invent prices or plans.
+""",
+                )
+
+        # -------------------------
+        # FINAL RESPONSE
+        # -------------------------
 
         assistant_response = response.text
 
-        # Save assistant response
+        print("FINAL RESPONSE:", assistant_response)
+
+        # -------------------------
+        # SAVE ASSISTANT RESPONSE
+        # -------------------------
+
         self.memory.add_message(
             "assistant",
             assistant_response

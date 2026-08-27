@@ -1,0 +1,38 @@
+{
+  "product_name": "SalesFlow CRM",
+  "currency": "INR",
+  "plans": [
+    {
+      "name": "Starter",
+      "price_per_month": 999,
+      "target": "Small teams",
+      "features": [
+        "Lead Management",
+        "Customer Management",
+        "Sales Pipeline"
+      ]
+    },
+    {
+      "name": "Professional",
+      "price_per_month": 1999,
+      "target": "Growing sales teams",
+      "features": [
+        "Everything in Starter",
+        "Automated Follow-ups",
+        "Sales Analytics",
+        "Advanced Reports"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "price_per_month": 4999,
+      "target": "Large organizations",
+      "features": [
+        "Everything in Professional",
+        "Priority Support",
+        "Custom Integrations",
+        "Advanced Security"
+      ]
+    }
+  ]
+}
