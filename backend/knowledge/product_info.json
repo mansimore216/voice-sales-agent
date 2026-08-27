@@ -1,0 +1,39 @@
+{
+  "product_name": "SalesFlow CRM",
+  "description": "SalesFlow CRM is a cloud-based customer relationship management platform designed to help sales teams manage leads, customers, follow-ups, and sales performance.",
+  "target_customers": [
+    "Small businesses",
+    "Startups",
+    "Growing sales teams",
+    "Sales departments"
+  ],
+  "features": [
+    {
+      "name": "Lead Management",
+      "description": "Track, organize, and manage leads throughout the sales pipeline."
+    },
+    {
+      "name": "Automated Follow-ups",
+      "description": "Create automated follow-up reminders so sales representatives do not miss potential customers."
+    },
+    {
+      "name": "Sales Analytics",
+      "description": "Monitor sales performance using dashboards and reports."
+    },
+    {
+      "name": "Customer Management",
+      "description": "Store and manage customer information in one centralized location."
+    },
+    {
+      "name": "Sales Pipeline",
+      "description": "Visualize deals and track them through different stages of the sales process."
+    }
+  ],
+  "benefits": [
+    "Reduce missed leads",
+    "Improve sales follow-ups",
+    "Centralize customer information",
+    "Track sales performance",
+    "Improve sales team productivity"
+  ]
+}
