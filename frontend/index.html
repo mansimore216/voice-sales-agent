@@ -1,87 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>SalesFlow AI</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <!-- =========================================
+         AGORA WEB SDK
+         ========================================= -->
+
+    <script src="https://download.agora.io/sdk/release/AgoraRTC_N-4.24.2.js"></script>
+
 </head>
+
 
 <body>
 
     <div class="app">
 
-        <!-- Sidebar -->
+
+        <!-- =========================================
+             SIDEBAR
+             ========================================= -->
+
         <aside class="sidebar">
 
             <div class="logo">
-                <div class="logo-icon">S</div>
+
+                <div class="logo-icon">
+                    S
+                </div>
 
                 <div>
+
                     <h2>SalesFlow</h2>
-                    <span>AI Sales Agent</span>
+
+                    <span>
+                        AI Sales Agent
+                    </span>
+
                 </div>
+
             </div>
+
 
             <div class="sidebar-content">
 
-                <button class="new-chat-btn" onclick="clearChat()">
+                <button
+                    type="button"
+                    class="new-chat-btn"
+                    onclick="clearChat()"
+                >
                     + New Conversation
                 </button>
 
+
                 <div class="sidebar-section">
-                    <p class="section-title">AI CAPABILITIES</p>
+
+                    <p class="section-title">
+                        AI CAPABILITIES
+                    </p>
+
 
                     <div class="capability">
+
                         <span>🤖</span>
+
                         <div>
-                            <strong>AI Sales Assistant</strong>
-                            <small>Intelligent conversations</small>
+
+                            <strong>
+                                AI Sales Assistant
+                            </strong>
+
+                            <small>
+                                Intelligent conversations
+                            </small>
+
                         </div>
+
                     </div>
 
+
                     <div class="capability">
+
                         <span>📦</span>
+
                         <div>
-                            <strong>Product Information</strong>
-                            <small>Features & benefits</small>
+
+                            <strong>
+                                Product Information
+                            </strong>
+
+                            <small>
+                                Features & benefits
+                            </small>
+
                         </div>
+
                     </div>
 
+
                     <div class="capability">
+
                         <span>💰</span>
+
                         <div>
-                            <strong>Pricing</strong>
-                            <small>Plans & pricing details</small>
+
+                            <strong>
+                                Pricing
+                            </strong>
+
+                            <small>
+                                Plans & pricing details
+                            </small>
+
                         </div>
+
                     </div>
 
+
                     <div class="capability">
+
                         <span>📅</span>
+
                         <div>
-                            <strong>Meeting Booking</strong>
-                            <small>Schedule sales meetings</small>
+
+                            <strong>
+                                Meeting Booking
+                            </strong>
+
+                            <small>
+                                Schedule sales meetings
+                            </small>
+
                         </div>
+
                     </div>
 
                 </div>
 
             </div>
 
+
             <div class="sidebar-footer">
+
                 <div class="status-dot"></div>
-                <span>AI Agent Online</span>
+
+                <span>
+                    AI Agent Online
+                </span>
+
             </div>
 
         </aside>
 
 
-        <!-- Main Chat Area -->
+
+        <!-- =========================================
+             MAIN CHAT
+             ========================================= -->
+
         <main class="chat-container">
 
-            <!-- Header -->
+
+            <!-- HEADER -->
+
             <header class="chat-header">
 
                 <div class="agent-info">
@@ -91,24 +183,40 @@
                     </div>
 
                     <div>
-                        <h1>SalesFlow AI</h1>
+
+                        <h1>
+                            SalesFlow AI
+                        </h1>
+
                         <p>
                             Your intelligent CRM sales assistant
                         </p>
+
                     </div>
 
                 </div>
 
+
                 <div class="online-status">
+
                     <span></span>
+
                     Online
+
                 </div>
 
             </header>
 
 
-            <!-- Chat Messages -->
-            <section id="chatMessages" class="chat-messages">
+
+            <!-- =========================================
+                 CHAT MESSAGES
+                 ========================================= -->
+
+            <section
+                id="chatMessages"
+                class="chat-messages"
+            >
 
                 <div class="welcome-message">
 
@@ -116,9 +224,11 @@
                         🤖
                     </div>
 
+
                     <h2>
                         Welcome to SalesFlow AI
                     </h2>
+
 
                     <p>
                         I'm your AI sales assistant. I can help you
@@ -126,19 +236,33 @@
                         your requirements, and schedule a meeting.
                     </p>
 
+
                     <div class="suggestions">
 
-                        <button onclick="sendSuggestion('Tell me about SalesFlow CRM')">
+
+                        <button
+                            type="button"
+                            onclick="sendSuggestion('Tell me about SalesFlow CRM')"
+                        >
                             📦 Tell me about the CRM
                         </button>
 
-                        <button onclick="sendSuggestion('What pricing plans do you offer?')">
+
+                        <button
+                            type="button"
+                            onclick="sendSuggestion('What pricing plans do you offer?')"
+                        >
                             💰 Show me pricing
                         </button>
 
-                        <button onclick="sendSuggestion('I want to schedule a meeting')">
+
+                        <button
+                            type="button"
+                            onclick="sendSuggestion('I want to schedule a meeting')"
+                        >
                             📅 Book a meeting
                         </button>
+
 
                     </div>
 
@@ -147,31 +271,62 @@
             </section>
 
 
-            <!-- Input Area -->
+
+            <!-- =========================================
+                 INPUT AREA
+                 ========================================= -->
+
             <footer class="chat-input-area">
 
+
                 <div class="input-wrapper">
+
+
+                    <!-- MICROPHONE -->
+
+                    <button
+                        type="button"
+                        id="micButton"
+                        class="mic-btn"
+                        title="Start voice conversation"
+                    >
+                        🎤
+                    </button>
+
+
+                    <!-- TEXT INPUT -->
 
                     <textarea
                         id="messageInput"
                         placeholder="Ask SalesFlow AI anything..."
                         rows="1"
-                        onkeydown="handleKeyPress(event)"
                     ></textarea>
 
+
+                    <!-- SEND -->
+
                     <button
+                        type="button"
                         id="sendButton"
                         class="send-btn"
-                        onclick="sendMessage()"
                     >
                         ➤
                     </button>
 
                 </div>
 
+
                 <div class="input-footer">
-                    <span>SalesFlow AI can help with product, pricing and sales inquiries.</span>
-                    <span>Powered by Gemini</span>
+
+                    <span>
+                        SalesFlow AI can help with product,
+                        pricing and sales inquiries.
+                    </span>
+
+                    <span id="voiceStatus">
+                        Voice: Not connected
+                    </span>
+
                 </div>
 
             </footer>
@@ -181,7 +336,13 @@
     </div>
 
 
+
+    <!-- =========================================
+         JAVASCRIPT
+         ========================================= -->
+
     <script src="script.js"></script>
 
 </body>
+
 </html>
