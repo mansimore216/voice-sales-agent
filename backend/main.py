@@ -1,11 +1,11 @@
+
 import os
 import time
 
-from fastapi import FastAPI
-from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from agora_token_builder import RtcTokenBuilder
 
 from agent.sales_agent import SalesAgent
@@ -70,7 +70,6 @@ def home():
 
 @app.post("/chat")
 def chat(request: ChatRequest):
-
     response = sales_agent.chat(request.message)
 
     return {
@@ -90,12 +89,12 @@ def generate_agora_token():
 
     if not app_id:
         return {
-            "error": "AGORA_APP_ID is missing in .env"
+            "error": "AGORA_APP_ID is missing"
         }
 
     if not app_certificate:
         return {
-            "error": "AGORA_APP_CERTIFICATE is missing in .env"
+            "error": "AGORA_APP_CERTIFICATE is missing"
         }
 
     channel_name = "salesflow"
@@ -118,3 +117,4 @@ def generate_agora_token():
         "token": token,
         "uid": uid
     }
+
